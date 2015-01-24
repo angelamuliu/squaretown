@@ -37,6 +37,21 @@ public class ColorShape : MonoBehaviour {
 	
 	}
 
+	void setColor(int newcolor)
+	{
+		color = newcolor;
+		nextColor = color;
+
+		switch (color){
+			case 0: sprite.sprite = r3;
+					break;
+			case 1: sprite.sprite = o3;
+					break;
+			case 2: sprite.sprite = y3;
+					break;
+		}
+	}
+
 	void pickup (int type){
 		// same as my current nextColor
 		if (type == color)
