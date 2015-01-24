@@ -11,7 +11,6 @@ public class Controller : MonoBehaviour {
 	public float jumpForce = 1;
 	public float movespeed = 1;
 
-
 	// Keeping track of player contact with ground
 	bool grounded = false; // Start false b/c player starts out falling
 	public Transform side1Check;
@@ -19,7 +18,6 @@ public class Controller : MonoBehaviour {
 	public Transform side3Check;
 	float groundradius = 0.2f;
 	public LayerMask whatIsGround;
-
 
 	void FixedUpdate () {
 		// Checking if any of its sides are touching the ground, first detect which is the lowest to use
@@ -58,6 +56,13 @@ public class Controller : MonoBehaviour {
 			// Maybe put triples jumps here one day...
 		}
 
+	}
+
+	// Deactivate objects player collides with if they are pickups
+	void OnTriggerEnter2D(Collider2D other) {
+		if (other.gameObject.tag == "Pickup") {
+			other.gameObject.SetActive (false);
+		}
 	}
 
 
