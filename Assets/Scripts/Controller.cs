@@ -22,9 +22,16 @@ public class Controller : MonoBehaviour {
 	float groundradius = 0.2f;
 	public LayerMask whatIsGround;
 
+	AudioSource jump_sound; AudioSource powerup_1; AudioSource powerup_2; AudioSource powerup_3;
+
 	void Start() {
 		colorshape = GetComponent <ColorShape> ();
 		delta = Vector2.zero;
+		AudioSource[] audios = GetComponents<AudioSource> ();
+		jump_sound = audios [0];
+		powerup_1 = audios [1];
+		powerup_2 = audios [2];
+		powerup_3 = audios [3];
 	}
 
 	void FixedUpdate () {
@@ -78,6 +85,8 @@ public class Controller : MonoBehaviour {
 		// Vertical movement
 		if (grounded && Input.GetKey (up)) {
 			y = jumpForce;
+			jump_sound.Play ();
+			rigidbody2D.velocity = new Vector2 (rigidbody2D.velocity.x, jumpForce);
 		} else {
 			y = 0;
 		}
@@ -90,14 +99,17 @@ public class Controller : MonoBehaviour {
 	// Deactivate objects player collides with if they are pickups
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.tag == "Tri_pickup") {
+			powerup_1.Play ();
 			other.gameObject.SetActive (false);
 			colorshape.pickup (0);
 		}
 		if (other.gameObject.tag == "Sqr_pickup") {
+			powerup_2.Play ();
 			other.gameObject.SetActive (false);
 			colorshape.pickup (1);
 		}
 		if (other.gameObject.tag == "Pen_pickup") {
+			powerup_3.Play ();
 			other.gameObject.SetActive (false);
 			colorshape.pickup (2);
 		}
