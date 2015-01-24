@@ -37,7 +37,7 @@ public class ColorShape : MonoBehaviour {
 	
 	}
 
-	void setColor(int newcolor)
+	public void setColor(int newcolor)
 	{
 		color = newcolor;
 		nextColor = color;
@@ -52,7 +52,7 @@ public class ColorShape : MonoBehaviour {
 		}
 	}
 
-	void pickup (int type){
+	public void pickup (int type){
 		// same as my current nextColor
 		if (type == color)
 			return;

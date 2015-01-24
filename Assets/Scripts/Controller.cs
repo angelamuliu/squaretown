@@ -2,7 +2,9 @@
 using System.Collections;
 
 public class Controller : MonoBehaviour {
-	
+
+	private ColorShape colorshape;
+
 	public KeyCode up;
 	public KeyCode down;
 	public KeyCode right;
@@ -18,6 +20,10 @@ public class Controller : MonoBehaviour {
 	public Transform side3Check;
 	float groundradius = 0.2f;
 	public LayerMask whatIsGround;
+
+	void Start() {
+		colorshape = GetComponent <ColorShape> ();
+	}
 
 	void FixedUpdate () {
 		// Checking if any of its sides are touching the ground, first detect which is the lowest to use
@@ -62,6 +68,7 @@ public class Controller : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.tag == "Pickup") {
 			other.gameObject.SetActive (false);
+			colorshape.pickup (1);
 		}
 	}
 
