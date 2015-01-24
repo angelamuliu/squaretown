@@ -112,6 +112,7 @@ public class ColorShape : MonoBehaviour {
 		else
 		{
 			nextColor = type;
+			count = 1;
 			switch (color) {
 				// red
 				case 0: if (nextColor == 1) sprite.sprite = r2o1;

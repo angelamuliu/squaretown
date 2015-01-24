@@ -66,9 +66,17 @@ public class Controller : MonoBehaviour {
 
 	// Deactivate objects player collides with if they are pickups
 	void OnTriggerEnter2D(Collider2D other) {
-		if (other.gameObject.tag == "Pickup") {
+		if (other.gameObject.tag == "Tri_pickup") {
+			other.gameObject.SetActive (false);
+			colorshape.pickup (0);
+		}
+		if (other.gameObject.tag == "Sqr_pickup") {
 			other.gameObject.SetActive (false);
 			colorshape.pickup (1);
+		}
+		if (other.gameObject.tag == "Pen_pickup") {
+			other.gameObject.SetActive (false);
+			colorshape.pickup (2);
 		}
 	}
 
