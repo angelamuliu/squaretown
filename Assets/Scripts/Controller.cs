@@ -22,6 +22,8 @@ public class Controller : MonoBehaviour {
 	float groundradius = 0.2f;
 	public LayerMask whatIsGround;
 
+	private bool gamestart = false;
+
 	AudioSource jump_sound; AudioSource powerup_1; AudioSource powerup_2; AudioSource powerup_3;
 
 	void Start() {
@@ -35,7 +37,6 @@ public class Controller : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-
 		rigidbody2D.velocity = new Vector2( delta.x, rigidbody2D.velocity.y + delta.y );
 
 		// wall jumping if you are a square!
@@ -66,35 +67,44 @@ public class Controller : MonoBehaviour {
 
 	void Update() {
 
-		float x = 0.0f, y = 0.0f;
-
-		// Horizontal movement
-		if (Input.GetKey (right)) 
-		{
-			x = movespeed;
-		} 
-		else if (Input.GetKey (left)) {
-			x = -movespeed;
-		}
-		else {
-			x = 0;
-		}
-		if (colorshape.color == 2)
-			x *= 2;
-
-		// Vertical movement
-		if (grounded && Input.GetKey (up)) {
-			y = jumpForce;
-			jump_sound.Play ();
-			rigidbody2D.velocity = new Vector2 (rigidbody2D.velocity.x, jumpForce);
+		if (!gamestart) {
+			if (Input.anyKey) {
+				gamestart = true;
+				rigidbody2D.isKinematic = false;
+			}
+			
 		} else {
-			y = 0;
+			float x = 0.0f, y = 0.0f;
+			
+			// Horizontal movement
+			if (Input.GetKey (right)) 
+			{
+				x = movespeed;
+			} 
+			else if (Input.GetKey (left)) {
+				x = -movespeed;
+			}
+			else {
+				x = 0;
+			}
+			if (colorshape.color == 2)
+				x *= 2;
+			
+			// Vertical movement
+			if (grounded && Input.GetKey (up)) {
+				y = jumpForce;
+				jump_sound.Play ();
+				rigidbody2D.velocity = new Vector2 (rigidbody2D.velocity.x, jumpForce);
+			} else {
+				y = 0;
+			}
+			if (colorshape.color == 0)
+				y *= 2;
+			
+			delta = new Vector2(x, y);
 		}
-		if (colorshape.color == 0)
-			y *= 2;
-
-		delta = new Vector2(x, y);
 	}
+
 
 	// Deactivate objects player collides with if they are pickups
 	void OnTriggerEnter2D(Collider2D other) {
