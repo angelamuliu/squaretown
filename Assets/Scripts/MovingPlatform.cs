@@ -29,18 +29,18 @@ public class MovingPlatform : MonoBehaviour {
 		float x_old = x_offset;
 		float y_old = y_offset;
 
-		x_offset += x_speed;
-		y_offset += y_speed;
+		x_offset += x_speed * Time.deltaTime;
+		y_offset += y_speed * Time.deltaTime;
 
 		if (x_offset < x_min || x_offset > x_max)
 		{
 			x_speed = -x_speed;
-			x_offset = x_old + x_speed;
+			x_offset = x_old + x_speed * Time.deltaTime;
 		}
 		if (y_offset < y_min || y_offset > y_max)
 		{
 			y_speed = -y_speed;
-			y_offset = y_old + y_speed;
+			y_offset = y_old + y_speed * Time.deltaTime;
 		}
 	}
 }
