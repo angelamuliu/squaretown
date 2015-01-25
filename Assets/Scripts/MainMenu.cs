@@ -24,6 +24,8 @@ public class MainMenu : MonoBehaviour {
 
 	public void EndGame() {
 
+		Debug.Log ("GAME OVER");
+
 		// pause the game
 		player.GetComponent<Rigidbody2D>().Sleep();
 		player.GetComponent<Controller>().enabled = false;
