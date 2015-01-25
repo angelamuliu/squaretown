@@ -10,25 +10,40 @@ public class Controller : MonoBehaviour {
 	public KeyCode right;
 	public KeyCode left;
 
-	public float jumpForce = 1;
-	public float movespeed = 1;
+	public float pushForce = 1; // pushing away from walls
+	public float jumpForce = 1; // jumping vertically
+	public float movespeed = 1; // running
+	public float wall_lockout_time = 0.5f;
 
-	// Keeping track of player contact with ground
-	bool grounded = false; // Start false b/c player starts out falling
-	private Vector2 delta;
+	// Keeping track of player contact with surfaces
+	private Collider2D ground = null;
+	private Collider2D wall = null;
+	private Collider2D platform = null;
+
+	// Keep momentum after wall jumps
+	private float wall_jump_time = 0.0f;
+
+	// desired velocity 
+	private Vector2 desiredVelocity = new Vector2(0, 0);
+
+	// edge collision detectors
 	public Transform side1Check;
 	public Transform side2Check;
 	public Transform side3Check;
-	float groundradius = 0.2f;
+	float checkradius = 0.2f;
+
 	public LayerMask whatIsGround;
+	public LayerMask whatIsWall;
+	public LayerMask movingPlatforms;
 
 	private bool gamestart = false;
 
 	AudioSource jump_sound; AudioSource powerup_1; AudioSource powerup_2; AudioSource powerup_3;
+	private bool jumpsound = false;
 
 	void Start() {
 		colorshape = GetComponent <ColorShape> ();
-		delta = Vector2.zero;
+		desiredVelocity = Vector2.zero;
 		AudioSource[] audios = GetComponents<AudioSource>();
 		jump_sound = audios [0];
 		powerup_1 = audios [1];
@@ -36,33 +51,133 @@ public class Controller : MonoBehaviour {
 		powerup_3 = audios [3];
 	}
 
-	void FixedUpdate () {
-		rigidbody2D.velocity = new Vector2( delta.x, rigidbody2D.velocity.y + delta.y );
+	private void CollisionDetection()
+	{
+		// am i touching the ground or a moving platform?
+		if (side1Check.position.y < side2Check.position.y) {
+			if (side1Check.position.y < side3Check.position.y) {
+				ground = Physics2D.OverlapCircle (side1Check.position, checkradius, whatIsGround);
+				platform = Physics2D.OverlapCircle (side1Check.position, checkradius, movingPlatforms);
+			} else { // side1 is greater than side 3 but less than side 2
+				ground = Physics2D.OverlapCircle (side3Check.position, checkradius, whatIsGround);
+				platform = Physics2D.OverlapCircle (side3Check.position, checkradius, movingPlatforms);
+			}
+		} else { // side 1 is greather than side 2
+			if (side2Check.position.y < side3Check.position.y) {
+				ground = Physics2D.OverlapCircle (side2Check.position, checkradius, whatIsGround);
+				platform = Physics2D.OverlapCircle (side2Check.position, checkradius, movingPlatforms);
+			} else { // side 2 is less than side 1 but greater than side 3
+				ground = Physics2D.OverlapCircle (side3Check.position, checkradius, whatIsGround);
+				platform = Physics2D.OverlapCircle (side3Check.position, checkradius, movingPlatforms);
+			}
+		}
 
-		// wall jumping if you are a square!
-		if (colorshape.color == 1)
+		// if wall-jumping enabled: am i touching a wall?
+		if ( colorshape.is_red() )
 		{
-			grounded = Physics2D.OverlapCircle (side1Check.position, groundradius, whatIsGround)
-					|| Physics2D.OverlapCircle (side2Check.position, groundradius, whatIsGround)
-					|| Physics2D.OverlapCircle (side3Check.position, groundradius, whatIsGround);
+			wall = Physics2D.OverlapCircle(side1Check.position, checkradius, whatIsWall);
+			if ( wall == null )
+				wall = Physics2D.OverlapCircle(side2Check.position, checkradius, whatIsWall);
+			if ( wall == null )
+				wall = Physics2D.OverlapCircle(side3Check.position, checkradius, whatIsWall);
+
+				Debug.Log( wall );
 		}
 		else
 		{
-			// Checking if any of its sides are touching the ground, first detect which is the lowest to use
-			if (side1Check.position.y < side2Check.position.y) {
-				if (side1Check.position.y < side3Check.position.y) {
-					grounded = Physics2D.OverlapCircle (side1Check.position, groundradius, whatIsGround);
-				} else { // side1 is greater than side 3 but less than side 2
-					grounded = Physics2D.OverlapCircle (side3Check.position, groundradius, whatIsGround);
-				}
-			} else { // side 1 is greather than side 2
-				if (side2Check.position.y < side3Check.position.y) {
-					grounded = Physics2D.OverlapCircle (side2Check.position, groundradius, whatIsGround);
-				} else { // side 2 is less than side 1 but greater than side 3
-					grounded = Physics2D.OverlapCircle (side3Check.position, groundradius, whatIsGround);
-				}
+			wall = null;
+		}
+	}
+
+	private float horizontal_input()
+	{
+		if ( Input.GetKey(right) )
+		{
+			return movespeed;
+		}
+		else if ( Input.GetKey(left) )
+		{
+			return -movespeed;
+		}
+		else
+		{
+			return 0.0f;
+		}
+	}
+
+	private void ComputeVelocity()
+	{
+		float x = rigidbody2D.velocity.x;
+		float y = rigidbody2D.velocity.y;
+
+		if ( ground )
+		{
+			x = horizontal_input();
+
+			// simple jump
+			if ( Input.GetKey(up) )
+			{
+				y = jumpForce;
+				jumpsound = true;
 			}
-		}		
+		}
+		else if ( platform )
+		{
+			x = platform.gameObject.GetComponent<MovingPlatform>().x_speed + horizontal_input();
+
+			// simple jump
+			if ( Input.GetKey(up) )
+			{
+				y = jumpForce;
+				jumpsound = true;
+			}
+		}
+		else if ( wall )
+		{
+			float my_x = transform.position.x;
+			float wall_x = wall.gameObject.transform.position.x;
+
+			// -1 if the wall is to the RIGHT of me
+			float dir = wall_x > my_x ? -1.0f : 1.0f;
+
+			// wall jump
+			if ( Input.GetKey(up) )
+			{
+				x = dir * pushForce;
+				y = jumpForce;
+				jumpsound = true;
+				wall_jump_time = Time.fixedTime;
+			}
+			else
+			{
+				x = horizontal_input();
+			}
+		}
+		else // freefall
+		{
+			// after a walljump, lock in horizontal momentum for a while
+			if ( wall_jump_time > 0.0f )
+			{
+				if ( Time.fixedTime - wall_jump_time > wall_lockout_time )
+					wall_jump_time = 0.0f;
+			}
+			else
+			{
+				x = horizontal_input();
+			}		
+		}
+
+		desiredVelocity = new Vector2(x, y);
+	}
+
+	void FixedUpdate () {
+		CollisionDetection();
+		rigidbody2D.velocity = desiredVelocity;
+		if ( jumpsound )
+		{
+			jumpsound = false;
+			jump_sound.Play();
+		}
 	}
 
 	void Update() {
@@ -74,34 +189,7 @@ public class Controller : MonoBehaviour {
 			}
 			
 		} else {
-			float x = 0.0f, y = 0.0f;
-			
-			// Horizontal movement
-			if (Input.GetKey (right)) 
-			{
-				x = movespeed;
-			} 
-			else if (Input.GetKey (left)) {
-				x = -movespeed;
-			}
-			else {
-				x = 0;
-			}
-			if (colorshape.color == 2)
-				x *= 2;
-			
-			// Vertical movement
-			if (grounded && Input.GetKey (up)) {
-				y = jumpForce;
-				jump_sound.Play ();
-				rigidbody2D.velocity = new Vector2 (rigidbody2D.velocity.x, jumpForce);
-			} else {
-				y = 0;
-			}
-			if (colorshape.color == 0)
-				y *= 2;
-			
-			delta = new Vector2(x, y);
+			ComputeVelocity();
 		}
 	}
 

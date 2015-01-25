@@ -39,6 +39,10 @@ public class ColorShape : MonoBehaviour {
 	
 	}
 
+	public bool is_red() { return color == 0; }
+	public bool is_orange() { return color == 1; }
+	public bool is_yellow() { return color == 2; }
+
 	public void setColor(int newcolor)
 	{
 		color = newcolor;
