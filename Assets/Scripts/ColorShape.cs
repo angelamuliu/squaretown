@@ -23,12 +23,14 @@ public class ColorShape : MonoBehaviour {
 	public int color;
 	private int nextColor;
 	private int count;
+	public float change_time;
 
 	// Use this for initialization
 	void Start () {
 		color = 0;
 		nextColor = 0;
 		count = 0;
+		change_time = 0.0f;
 		sprite.sprite = r3;
 	}
 	
@@ -50,6 +52,8 @@ public class ColorShape : MonoBehaviour {
 			case 2: sprite.sprite = y3;
 					break;
 		}
+
+		change_time = Time.fixedTime;
 	}
 
 	public void pickup (int type){
@@ -70,6 +74,8 @@ public class ColorShape : MonoBehaviour {
 					sprite.sprite = o3;
 				else if (nextColor == 2)
 					sprite.sprite = y3;
+
+				change_time = Time.fixedTime;
 			}
 			else if (count == 2)
 			{
