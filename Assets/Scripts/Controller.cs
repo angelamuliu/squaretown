@@ -87,18 +87,38 @@ public class Controller : MonoBehaviour {
 
 	private float horizontal_input()
 	{
+		float x = 0.0f;
+
 		if ( Input.GetKey(right) )
 		{
-			return movespeed;
+			x = movespeed;
 		}
 		else if ( Input.GetKey(left) )
 		{
-			return -movespeed;
+			x = -movespeed;
 		}
-		else
+		
+		if (colorshape.color == 2)
 		{
-			return 0.0f;
+			x *= 2;
 		}
+		return x;
+	}
+
+	private float jump()
+	{
+		float y = 0.0f;
+		// simple jump
+		if ( Input.GetKey(up) )
+		{
+			y = jumpForce;
+			jumpsound = true;
+		}
+		if (colorshape.color == 0)
+		{
+			y *= 1.5f;
+		}
+		return y;
 	}
 
 	private void ComputeVelocity()
@@ -109,24 +129,12 @@ public class Controller : MonoBehaviour {
 		if ( ground )
 		{
 			x = horizontal_input();
-
-			// simple jump
-			if ( Input.GetKey(up) )
-			{
-				y = jumpForce;
-				jumpsound = true;
-			}
+			y = jump();
 		}
 		else if ( platform )
 		{
 			x = platform.gameObject.GetComponent<MovingPlatform>().x_speed + horizontal_input();
-
-			// simple jump
-			if ( Input.GetKey(up) )
-			{
-				y = jumpForce;
-				jumpsound = true;
-			}
+			y = jump();
 		}
 		else if ( wall )
 		{
