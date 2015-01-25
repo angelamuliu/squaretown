@@ -5,7 +5,7 @@ public class Pickup : MonoBehaviour {
 
 	public ColorShape player;
 	private float time_consumed;
-	private bool is_enabled;
+	public bool is_enabled;
 	private BoxCollider2D box;
 	private SpriteRenderer sprite;
 
