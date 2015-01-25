@@ -17,11 +17,11 @@ public class Fallingplatform : MonoBehaviour {
 	private Color darktint = new Color(242.0f/255, 242.0f/255, 242.0f/255, 1);
 
 	SpriteRenderer mySprite;
-	BoxCollider2D boxcollider;
+	PolygonCollider2D collider;
 	
 	void Start () {
 		mySprite = GetComponent<SpriteRenderer> ();
-		boxcollider = GetComponent<BoxCollider2D>();
+		collider = GetComponent<PolygonCollider2D>();
 		startx = transform.position.x;
 		starty = transform.position.y;
 	}
@@ -45,8 +45,7 @@ public class Fallingplatform : MonoBehaviour {
 			rigidbody2D.isKinematic = false;
 
 			yield return new WaitForSeconds (jumpdelay);
-			boxcollider = GetComponent<BoxCollider2D>();
-			boxcollider.enabled = false;
+			collider.enabled = false;
 
 			yield return new WaitForSeconds (respawntime); // Set the fall time
 			respawn ();
@@ -59,7 +58,7 @@ public class Fallingplatform : MonoBehaviour {
 		rigidbody2D.isKinematic = true;
 		mySprite.color = new Color (1, 1, 1, 1);
 		transform.position = new Vector3(startx, starty, 0);
-		boxcollider.enabled = true;
+		collider.enabled = true;
 	}
 
 
