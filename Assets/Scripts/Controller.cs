@@ -73,7 +73,7 @@ public class Controller : MonoBehaviour {
 		}
 
 		// if wall-jumping enabled: am i touching a wall?
-		if ( colorshape.is_red() )
+		if ( colorshape.is_orange() )
 		{
 			wall = Physics2D.OverlapCircle(side1Check.position, checkradius, whatIsWall);
 			if ( wall == null )
@@ -179,16 +179,7 @@ public class Controller : MonoBehaviour {
 	}
 
 	void Update() {
-
-		if (!gamestart) {
-			if (Input.anyKey) {
-				gamestart = true;
-				rigidbody2D.isKinematic = false;
-			}
-			
-		} else {
-			ComputeVelocity();
-		}
+		ComputeVelocity();
 	}
 
 
