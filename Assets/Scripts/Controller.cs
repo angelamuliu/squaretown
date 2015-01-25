@@ -36,8 +36,6 @@ public class Controller : MonoBehaviour {
 	public LayerMask whatIsWall;
 	public LayerMask movingPlatforms;
 
-	private bool gamestart = false;
-
 	AudioSource jump_sound; AudioSource powerup_1; AudioSource powerup_2; AudioSource powerup_3;
 	private bool jumpsound = false;
 
