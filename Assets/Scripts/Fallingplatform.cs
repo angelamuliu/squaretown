@@ -13,6 +13,7 @@ public class Fallingplatform : MonoBehaviour {
 
 	private float startx;
 	private float starty;
+	private Quaternion startRotation;
 
 	private Color darktint = new Color(242.0f/255, 242.0f/255, 242.0f/255, 1);
 
@@ -24,6 +25,7 @@ public class Fallingplatform : MonoBehaviour {
 		collider = GetComponent<PolygonCollider2D>();
 		startx = transform.position.x;
 		starty = transform.position.y;
+		startRotation = transform.rotation;
 	}
 	
 	// Update is called once per frame
@@ -59,6 +61,7 @@ public class Fallingplatform : MonoBehaviour {
 		rigidbody2D.isKinematic = true;
 		mySprite.color = new Color (1, 1, 1, 1);
 		transform.position = new Vector3(startx, starty, 0);
+		transform.rotation = startRotation;
 		collider.enabled = true;
 	}
 
