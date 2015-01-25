@@ -36,8 +36,6 @@ public class Controller : MonoBehaviour {
 	public LayerMask whatIsWall;
 	public LayerMask movingPlatforms;
 
-	private bool gamestart = false;
-
 	AudioSource jump_sound; AudioSource powerup_1; AudioSource powerup_2; AudioSource powerup_3;
 	private bool jumpsound = false;
 
@@ -73,7 +71,7 @@ public class Controller : MonoBehaviour {
 		}
 
 		// if wall-jumping enabled: am i touching a wall?
-		if ( colorshape.is_red() )
+		if ( colorshape.is_orange() )
 		{
 			wall = Physics2D.OverlapCircle(side1Check.position, checkradius, whatIsWall);
 			if ( wall == null )
@@ -179,16 +177,7 @@ public class Controller : MonoBehaviour {
 	}
 
 	void Update() {
-
-		if (!gamestart) {
-			if (Input.anyKey) {
-				gamestart = true;
-				rigidbody2D.isKinematic = false;
-			}
-			
-		} else {
-			ComputeVelocity();
-		}
+		ComputeVelocity();
 	}
 
 
