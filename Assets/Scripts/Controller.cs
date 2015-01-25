@@ -80,8 +80,6 @@ public class Controller : MonoBehaviour {
 				wall = Physics2D.OverlapCircle(side2Check.position, checkradius, whatIsWall);
 			if ( wall == null )
 				wall = Physics2D.OverlapCircle(side3Check.position, checkradius, whatIsWall);
-
-				Debug.Log( wall );
 		}
 		else
 		{
