@@ -16,13 +16,15 @@ public class Fitin : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+		CollisionDetection ();
 		if (fitin) {
 			Debug.Log ("GAME OVER");
+		} else {
+			Debug.Log ("no..");
 		}
-	
 	}
 
-	private void CollisionDetection() {
+	void CollisionDetection() {
 		fitin = Physics2D.OverlapCircle (playerChecker.position, checkradius, whatIsPlayer);
 	}
 }
