@@ -38,6 +38,7 @@ public class Fallingplatform : MonoBehaviour {
 
 	IEnumerator OnCollisionEnter2D(Collision2D other) {
 		if (other.gameObject.tag == "Player") {
+			Debug.Log ("Hit");
 			// Player can safely sit on this platform for a bit
 			mySprite.color = darktint;
 			yield return new WaitForSeconds (safetime);
