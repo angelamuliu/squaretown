@@ -18,11 +18,13 @@ public class Fallingplatform : MonoBehaviour {
 	private Color darktint = new Color(242.0f/255, 242.0f/255, 242.0f/255, 1);
 
 	SpriteRenderer mySprite;
-	PolygonCollider2D myCollider;
+	//PolygonCollider2D myCollider;
+	Collider2D myCollider;
 	
 	void Start () {
 		mySprite = GetComponent<SpriteRenderer>();
-		myCollider = GetComponent<PolygonCollider2D>();
+		//myCollider = GetComponent<PolygonCollider2D>();
+		myCollider = GetComponent<Collider2D>();
 		startx = transform.position.x;
 		starty = transform.position.y;
 		startRotation = transform.rotation;
