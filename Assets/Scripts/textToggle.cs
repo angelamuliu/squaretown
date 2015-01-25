@@ -30,12 +30,13 @@ public class textToggle : MonoBehaviour {
 		if (Input.GetKey (confirm_choice) && chosen) {
 			Debug.Log (selection);
 			if (selection == "Stay") {
+				transform.parent.parent.GetChild(0).GetComponent<Fitin>().activateEndscreen();
 				transform.parent.parent.GetChild(0).GetComponent<Fitin>().gameEngine.EndGame();
 			} else {
+				// Deactivate Fitin detection script to prevent player from making choice again per game
 				transform.parent.parent.GetChild(0).GetComponent<Fitin>().gameEngine.ResumeGame();
+				transform.parent.parent.GetChild(0).GetComponent<Fitin>().deactivate();
 			}
-			// Deactivate Fitin detection script after one choice
-			transform.parent.parent.GetChild(0).GetComponent<Fitin>().deactivate();
 			HideText();
 		}
 	}

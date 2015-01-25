@@ -39,4 +39,9 @@ public class MainMenu : MonoBehaviour {
 		Debug.Log ("GAME OVER");
 	}
 
+	public void Restart() {
+		Debug.Log ("RESTART");
+		Application.LoadLevel("UltimateLevel");
+	}
+
 }
