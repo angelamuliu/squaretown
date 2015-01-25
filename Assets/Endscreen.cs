@@ -7,8 +7,11 @@ public class Endscreen : MonoBehaviour {
 	void Update () {
 		if (Input.anyKey) {
 			Debug.Log ("ANYKEY");
-			Invoke("resetgame", 2);
 		}
+	}
+
+	public void timedReset() {
+		Invoke("resetgame", 2);
 	}
 
 	void resetgame() {
